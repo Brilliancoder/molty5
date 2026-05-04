@@ -1,0 +1,25 @@
+app = "molty5"
+primary_region = "sin"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[build]
+
+[env]
+  PYTHONUNBUFFERED = "1"
+
+# Process utama (bot kamu)
+[processes]
+  app = "python -m bot.main"
+
+# Volume untuk simpan wallet / memory / context
+[mounts]
+  source = "molty_data"
+  destination = "/root/.molty-royale"
+
+# Optional: biar mesin tetap jalan (no auto sleep)
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
