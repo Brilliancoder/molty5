@@ -2,20 +2,21 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies first (cache layer for fast rebuilds)
+# Prevent Python buffering (biar logs langsung keluar)
+ENV PYTHONUNBUFFERED=1
+
+# Install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy bot source
-COPY bot/ ./bot/
+# Copy semua file (lebih aman daripada cuma bot/)
+COPY . .
 
-# Create dirs for credentials and memory persistence
+# Create persistence dirs
 RUN mkdir -p /app/dev-agent /root/.molty-royale
 
-# Railway injects PORT env var; default 8080 for dashboard
+# Optional: port (kalau nanti tambah healthcheck/web)
 EXPOSE 8080
 
-# Railway: env vars injected at runtime, volumes configured via dashboard
-# Local Docker: use docker run --env-file .env -v molty-data:/root/.molty-royale
-
+# Run bot
 CMD ["python", "-m", "bot.main"]
